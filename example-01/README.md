@@ -6,8 +6,8 @@ _Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
 
 1. Clone
 
-```
-git clone 
+```sh
+git clone https://github.com/kitiplex/FlaskGenesis/tree/main/example-01.git
 ```
 
 2. Instruction
