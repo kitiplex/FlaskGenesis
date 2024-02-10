@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- Bootstrap ICONS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <link rel="shortcut icon"
+        href="https://res.cloudinary.com/kitiplex-cloud-env/image/upload/v1696490411/cdn-kitiplex/static/icons/ktplx_icon_kitk6z.ico">
+    <!-- Local assets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <title>Password generator{% block title %}{% endblock title %}</title>
+</head>
+
+<body>
+    <h1>Password Generator</h1>
+    <form method="POST" action="/generate_password">
+        <label for="length">Password Length:</label>
+        <input type="number" name="length" id="length" min="6" max="20" required>
+        <br>
+        <label for="complexity">Complexity Level:</label>
+        <select name="complexity" id="complexity" required>
+            <option value="low">Low (lowercase letters)</option>
+            <option value="medium">Medium (letters and numbers)</option>
+            <option value="high">High (letters, numbers, and special characters)</option>
+        </select>
+        <br>
+        <input type="submit" value="Generate Password">
+    </form>
+    <br>
+    <div>
+        Generated Password: <span id="password"></span>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const passwordContainer = document.getElementById('password');
+
+            try {
+                const response = await fetch('/generate_password', {
+                    method: 'POST',
+                    body: new FormData(form),
+                });
+                const password = await response.text();
+                passwordContainer.textContent = password;
+            } catch (error) {
+                console.error(error);
+                passwordContainer.textContent = 'Error generating password.';
+            }
+        });
+    </script>
+</body>
+
+</html>
