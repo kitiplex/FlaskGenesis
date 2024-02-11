@@ -5,3 +5,4 @@ SQLAlchemy
 Flask-Migrate
 Flask-SQLAlchemy
 flask_wtf
+pytest

@@ -43,6 +43,10 @@ def details(id):
     reviews = Review.query.where(Review.restaurant == id)
     return render_template('details.html', restaurant=restaurant, reviews=reviews)
 
+@app.route('/create', methods=['GET'])
+def create_restaurant():
+    return render_template('create_restaurant.html')
+
 @app.route('/add', methods=['POST'])
 @csrf.exempt
 def add_restaurant():
