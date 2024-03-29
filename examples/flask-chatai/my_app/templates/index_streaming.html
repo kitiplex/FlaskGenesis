@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GinaBot Streaming Chat</title>
+</head>
+<body>
+    <h1>Welcome to GinaBot Streaming Chat</h1>
+    <div id="chat-container">
+        <div id="chat"></div>
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const chatDiv = document.getElementById('chat');
+
+        const eventSource = new EventSource('/stream');
+        eventSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (data.GinaBot) {
+                appendMessage('GinaBot', data.GinaBot);
+            }
+        };
+
+        function appendMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `<strong>${role}:</strong> ${content}`;
+            chatDiv.appendChild(messageDiv);
+        }
+
+        function sendMessage() {
+            const userMessage = document.getElementById('user-input').value;
+            document.getElementById('user-input').value = '';
+
+            appendMessage('You', userMessage);
+
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_message: userMessage }),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to get a valid response from the server.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.GinaBot !== undefined) {
+                    appendMessage('GinaBot', data.GinaBot);
+                } else {
+                    throw new Error('Invalid response from the server.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error.message);
+                appendMessage('Error', 'Failed to get a valid response from the server.');
+            });
+        }
+    </script>
+</body>
+</html>
